@@ -1,4 +1,9 @@
-package main
+package database
+
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
 
 // RDWCarResponse represents the structure of the RDW API response
 type RDWCarResponse struct {
@@ -55,4 +60,28 @@ type RDWCarResponse struct {
 	APIGekentekendeVoertuigenCarrosserie          string  `json:"api_gekentekende_voertuigen_carrosserie"`
 	APIGekentekendeVoertuigenCarrosserieSpecifiek string  `json:"api_gekentekende_voertuigen_carrosserie_specifiek"`
 	APIGekentekendeVoertuigenVoertuigklasse       string  `json:"api_gekentekende_voertuigen_voertuigklasse"`
+}
+
+type Car struct {
+	ID                       primitive.ObjectID `bson:"_id,omitempty"`
+	Kenteken                 string             `bson:"kenteken"`
+	Merk                     string             `bson:"merk"`
+	Handelsbenaming          string             `bson:"handelsbenaming"`
+	Variant                  string             `bson:"variant"`
+	Uitvoering               string             `bson:"uitvoering"`
+	Inrichting               string             `bson:"inrichting"`
+	EersteKleur              string             `bson:"eerste_kleur"`
+	TweedeKleur              string             `bson:"tweede_kleur"`
+	AantalZitplaatsen        int                `bson:"aantal_zitplaatsen"`
+	AantalDeuren             int                `bson:"aantal_deuren"`
+	AantalWielen             int                `bson:"aantal_wielen"`
+	AantalCilinders          int                `bson:"aantal_cilinders"`
+	Cilinderinhoud           int                `bson:"cilinderinhoud"`
+	Catalogusprijs           int                `bson:"catalogusprijs"`
+	Lengte                   int                `bson:"lengte"`
+	Wielbasis                int                `bson:"wielbasis"`
+	DatumEersteToelating     string             `bson:"datum_eerste_toelating"`
+	Zuinigheidsclassificatie string             `bson:"zuinigheidsclassificatie"`
+	Picture                  string             `bson:"picture,omitempty"`
+	DrivenDate               time.Time          `bson:"driven_date"`
 }

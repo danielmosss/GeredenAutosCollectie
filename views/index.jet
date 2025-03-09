@@ -35,7 +35,7 @@
       <div class="w-48 h-32 relative bg-gray-200 overflow-hidden rounded flex justify-center items-center">
         {{ if .Picture }}
           <!-- Show car image -->
-          <img src="data:image/jpeg;base64,{{ .Picture }}" alt="Car Image" class="object-cover w-full h-full">
+          <img src="data:image/jpeg;base64,{{ .Picture }}" alt="Car Image" class="object-contain w-full h-full">
           <!-- Deletion button appears on hover -->
           <form
             action="/delete-image"
