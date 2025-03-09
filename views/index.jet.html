@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Cars I've Driven</title>
+</head>
+<body class="bg-gray-100">
+
+<h1 class="text-4xl font-semibold text-center mt-8 mb-4">Cars I've Driven</h1>
+
+<!-- Formulier om een nieuwe auto toe te voegen -->
+<div class="flex justify-center mb-8">
+    <form action="/add-car" method="POST" class="flex">
+        <input
+            type="text"
+            name="kenteken"
+            placeholder="Kenteken"
+            class="border border-gray-300 rounded-l px-4 py-2 focus:outline-none focus:border-blue-500"
+        />
+        <input
+            type="submit"
+            value="Add Car"
+            class="bg-blue-500 hover:bg-blue-600 text-white rounded-r px-4 py-2 cursor-pointer"
+        />
+    </form>
+</div>
+
+<!-- Grid layout voor auto's -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
+    {{ range . }}
+    <div class="w-[400px] bg-white shadow-lg rounded-lg overflow-hidden">
+        <!-- Afbeelding sectie -->
+        <div class="w-full h-64 bg-gray-200 flex justify-center items-center relative">
+            {{ if .Picture }}
+                <img src="data:image/jpeg;base64,{{ .Picture }}" alt="Car Image" class="object-fill h-full">
+                <form action="/delete-image" method="POST" class="absolute inset-0 flex justify-center items-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30">
+                    <input type="hidden" name="kenteken" value="{{ .Kenteken }}">
+                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
+                        Delete
+                    </button>
+                </form>
+            {{ else }}
+                <form action="/upload-image" method="POST" enctype="multipart/form-data" class="flex flex-col items-center">
+                    <input type="hidden" name="kenteken" value="{{ .Kenteken }}">
+                    <label class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">
+                        Upload Image
+                        <input type="file" name="picture" class="hidden" onchange="this.form.submit()">
+                    </label>
+                </form>
+            {{ end }}
+        </div>
+
+        <!-- Autodetails -->
+        <div class="p-4">
+            <h2 class="text-lg font-semibold text-gray-800">{{ .Merk }} {{ .Handelsbenaming }}</h2>
+            <p class="text-gray-600 text-sm">Kenteken: {{ .Kenteken }}</p>
+            <p class="text-gray-600 text-sm">Variant: {{ .Variant }} - {{ .Uitvoering }}</p>
+            <p class="text-gray-600 text-sm">Kleur: {{ .EersteKleur }}</p>
+            <p class="text-gray-600 text-sm">Zitplaatsen: {{ .AantalZitplaatsen }}</p>
+            <p class="text-gray-600 text-sm">Deuren: {{ .AantalDeuren }}</p>
+            <p class="text-gray-600 text-sm">Cilinders: {{ .AantalCilinders }}</p>
+            <p class="text-gray-600 text-sm">Catalogusprijs: €{{ .Catalogusprijs }}</p>
+        </div>
+    </div>
+    {{ end }}
+</div>
+
+</body>
+</html>

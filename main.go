@@ -27,7 +27,7 @@ func main() {
 			return c.String(http.StatusInternalServerError, "Failed to get cars")
 		}
 
-		v, err := views.GetTemplate("index.jet")
+		v, err := views.GetTemplate("index.jet.html")
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Failed to load template")
 		}
@@ -46,6 +46,10 @@ func main() {
 
 	e.POST("/upload-image", func(c echo.Context) error {
 		return handlers.UploadImage(c)
+	})
+
+	e.POST("/delete-image", func(c echo.Context) error {
+		return handlers.DeleteImage(c)
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))

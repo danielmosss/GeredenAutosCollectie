@@ -100,6 +100,18 @@ func AddPictureToCar(kenteken, pictureURL string) error {
 	return nil
 }
 
+func DeletePicterOfCar(kenteken string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := collection.UpdateOne(ctx, bson.M{"kenteken": kenteken}, bson.M{"$unset": bson.M{"picture": ""}})
+	if err != nil {
+		return fmt.Errorf("failed to delete picture of car: %v", err)
+	}
+
+	return nil
+}
+
 func GetCarDataFromRDWAPI(kenteken string) (Car, error) {
 	// API endpoint
 	apiURL := fmt.Sprintf("https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1&kenteken=%s", url.QueryEscape(kenteken))
