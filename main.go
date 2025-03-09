@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/CloudyKit/jet/v6"
@@ -12,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -210,25 +212,6 @@ func convertStringToInt(s string) int {
 	return i
 }
 
-// Helper functions to safely extract values from the API response
-func getString(data map[string]interface{}, key string) string {
-	if value, ok := data[key]; ok {
-		if str, ok := value.(string); ok {
-			return str
-		}
-	}
-	return ""
-}
-
-func getInt(data map[string]interface{}, key string) int {
-	if value, ok := data[key]; ok {
-		if floatValue, ok := value.(float64); ok {
-			return int(floatValue)
-		}
-	}
-	return 0
-}
-
 func main() {
 	godotenv.Load()
 	// Initialize Jet views
@@ -276,11 +259,33 @@ func main() {
 		return c.Redirect(http.StatusSeeOther, "/")
 	})
 
-	e.POST("/add-picture", func(c echo.Context) error {
+	e.POST("/upload-image", func(c echo.Context) error {
 		kenteken := c.FormValue("kenteken")
-		pictureURL := c.FormValue("picture_url")
 
-		if err := addPictureToCar(kenteken, pictureURL); err != nil {
+		// Retrieve file from form
+		file, err := c.FormFile("picture")
+		if err != nil {
+			return c.String(http.StatusBadRequest, "Failed to get file")
+		}
+
+		// Open the file
+		src, err := file.Open()
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "Failed to open file")
+		}
+		defer src.Close()
+
+		// Read file content into a buffer
+		buf := new(bytes.Buffer)
+		if _, err := io.Copy(buf, src); err != nil {
+			return c.String(http.StatusInternalServerError, "Failed to read file")
+		}
+
+		// Encode file content to Base64
+		encodedImage := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+		// Call function to store the Base64 string in the database
+		if err := addPictureToCar(kenteken, encodedImage); err != nil {
 			return c.String(http.StatusInternalServerError, "Failed to add picture")
 		}
 

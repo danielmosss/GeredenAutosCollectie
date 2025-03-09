@@ -1,23 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cars I've Driven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+<title>Cars I've Driven</title>
 </head>
 <body>
-    <h1>Cars I've Driven</h1>
-    <form action="/add-car" method="POST">
-        <input type="text" name="kenteken" placeholder="Kenteken">
-        <input type="submit" value="Add Car">
-    </form>
-    <ul>
-        {{ range . }}
-        <li>
-            {{ .Kenteken }} - {{ .Merk }} {{ .Handelsbenaming }}
-            {{ if .Picture }}
-                <img src="{{ .Picture }}" alt="Car Image" width="200">
-            {{ end }}
-        </li>
+<h1 class="text-4xl font-semibold text-center mt-8 mb-4">Cars I've Driven</h1>
+
+<div>
+  <form action="/add-car" method="POST" class="flex justify-center mb-8">
+    <input
+      type="text"
+      name="kenteken"
+      placeholder="Kenteken"
+      class="border border-gray-300 rounded-l px-4 py-2 focus:outline-none focus:border-blue-500"
+    />
+    <input
+      type="submit"
+      value="Add Car"
+      class="bg-blue-500 hover:bg-blue-600 text-white rounded-r px-4 py-2 cursor-pointer"
+    />
+  </form>
+
+  <ul class="space-y-4">
+    {{ range . }}
+    <li class="bg-white shadow rounded p-4 flex items-center space-x-4">
+      <!-- Car details -->
+      <div class="flex-1">
+        <p class="text-xl font-semibold">{{ .Kenteken }}</p>
+        <p class="text-gray-700">{{ .Merk }} {{ .Handelsbenaming }}</p>
+      </div>
+
+      <!-- Image block -->
+      <div class="w-48 h-32 relative bg-gray-200 overflow-hidden rounded flex justify-center items-center">
+        {{ if .Picture }}
+          <!-- Show car image -->
+          <img src="data:image/jpeg;base64,{{ .Picture }}" alt="Car Image" class="object-cover w-full h-full">
+          <!-- Deletion button appears on hover -->
+          <form
+            action="/delete-image"
+            method="POST"
+            class="absolute inset-0 flex justify-center items-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30"
+          >
+            <input type="hidden" name="kenteken" value="{{ .Kenteken }}">
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
+              Delete Image
+            </button>
+          </form>
+        {{ else }}
+          <!-- No image yet; show an upload button -->
+          <form
+            action="/upload-image"
+            method="POST"
+            enctype="multipart/form-data"
+            class="flex flex-col justify-center items-center"
+          >
+            <input type="hidden" name="kenteken" value="{{ .Kenteken }}">
+            <label class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">
+              Upload Image
+              <input type="file" name="picture" class="hidden" onchange="this.form.submit()">
+            </label>
+          </form>
         {{ end }}
-    </ul>
-</body>
-</html>
+      </div>
+    </li>
+    {{ end }}
+  </ul>
+</div>
