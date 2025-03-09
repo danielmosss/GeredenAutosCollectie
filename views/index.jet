@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cars I've Driven</title>
+</head>
+<body>
+    <h1>Cars I've Driven</h1>
+    <form action="/add-car" method="POST">
+        <input type="text" name="kenteken" placeholder="Kenteken">
+        <input type="submit" value="Add Car">
+    </form>
+    <ul>
+        {{ range . }}
+        <li>
+            {{ .Kenteken }} - {{ .Merk }} {{ .Handelsbenaming }}
+            {{ if .Picture }}
+                <img src="{{ .Picture }}" alt="Car Image" width="200">
+            {{ end }}
+        </li>
+        {{ end }}
+    </ul>
+</body>
+</html>
