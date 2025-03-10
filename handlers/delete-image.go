@@ -10,7 +10,10 @@ func DeleteImage(c echo.Context) error {
 	kenteken := c.FormValue("kenteken")
 	err := database.DeletePicterOfCar(kenteken)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to delete image")
+		data := echo.Map{
+			"error": err,
+		}
+		return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/")

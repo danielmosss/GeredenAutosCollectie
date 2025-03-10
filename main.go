@@ -24,22 +24,13 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		cars, err := database.GetAllCars()
 		if err != nil {
-			return c.String(http.StatusInternalServerError, "Failed to get cars")
+			data := echo.Map{
+				"error": err,
+			}
+			return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 		}
 
 		return c.Render(http.StatusOK, "index.jet.html", cars)
-
-		//v, err := views.GetTemplate("index.jet.html")
-		//if err != nil {
-		//	return c.String(http.StatusInternalServerError, "Failed to load template")
-		//}
-		//
-		//var buf bytes.Buffer
-		//if err := v.Execute(&buf, nil, cars); err != nil {
-		//	return c.String(http.StatusInternalServerError, "Failed to execute template")
-		//}
-		//
-		//return c.HTML(http.StatusOK, buf.String())
 	})
 
 	e.POST("/add-car", func(c echo.Context) error {
@@ -52,15 +43,6 @@ func main() {
 
 	e.POST("/delete-image", func(c echo.Context) error {
 		return handlers.DeleteImage(c)
-	})
-
-	e.GET("test-error", func(c echo.Context) error {
-		err := c.Render(http.StatusOK, "error.jet.html", nil)
-		if err != nil {
-			c.Logger().Error(err)
-			return c.String(http.StatusInternalServerError, "Internal Server Error")
-		}
-		return nil
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))

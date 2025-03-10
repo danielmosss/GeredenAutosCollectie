@@ -15,20 +15,29 @@ func UploadImage(c echo.Context) error {
 	// Retrieve file from form
 	file, err := c.FormFile("picture")
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Failed to get file")
+		data := echo.Map{
+			"error": err,
+		}
+		return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 	}
 
 	// Open the file
 	src, err := file.Open()
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to open file")
+		data := echo.Map{
+			"error": err,
+		}
+		return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 	}
 	defer src.Close()
 
 	// Read file content into a buffer
 	buf := new(bytes.Buffer)
 	if _, err := io.Copy(buf, src); err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to read file")
+		data := echo.Map{
+			"error": err,
+		}
+		return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 	}
 
 	// Encode file content to Base64
@@ -36,7 +45,10 @@ func UploadImage(c echo.Context) error {
 
 	// Call function to store the Base64 string in the database
 	if err := database.AddPictureToCar(kenteken, encodedImage); err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to add picture")
+		data := echo.Map{
+			"error": err,
+		}
+		return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/")
