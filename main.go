@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func main() {
@@ -57,6 +58,41 @@ func main() {
 
 	e.POST("/delete-image", func(c echo.Context) error {
 		return handlers.DeleteImage(c)
+	})
+
+	e.GET("/edit-car/:kenteken", func(c echo.Context) error {
+		kenteken := c.Param("kenteken")
+		car, err := database.GetCarByKenteken(kenteken)
+		if err != nil {
+			data := echo.Map{
+				"error": err,
+			}
+			return c.Render(http.StatusInternalServerError, "error.jet.html", data)
+		}
+		return c.Render(http.StatusOK, "editcar.jet.html", car)
+	})
+
+	e.POST("/update-car/:kenteken", func(c echo.Context) error {
+		kenteken := c.Param("kenteken")
+
+		var updatedCar, _ = database.GetCarByKenteken(kenteken)
+		updatedCar.Kenteken = kenteken
+		updatedCar.Merk = c.FormValue("merk")
+		updatedCar.Handelsbenaming = c.FormValue("handelsbenaming")
+		updatedCar.Variant = c.FormValue("variant")
+		updatedCar.Uitvoering = c.FormValue("uitvoering")
+		updatedCar.EersteKleur = c.FormValue("kleur")
+
+		updatedCar.AantalZitplaatsen, _ = strconv.Atoi(c.FormValue("zitplaatsen"))
+		updatedCar.AantalDeuren, _ = strconv.Atoi(c.FormValue("deuren"))
+		updatedCar.AantalCilinders, _ = strconv.Atoi(c.FormValue("cilinders"))
+		updatedCar.Catalogusprijs, _ = strconv.Atoi(c.FormValue("catalogusprijs"))
+
+		err := database.UpdateCarData(kenteken, updatedCar)
+		if err != nil {
+			return err
+		}
+		return c.Redirect(http.StatusFound, "/")
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))

@@ -191,3 +191,15 @@ func convertStringToInt(s string) int {
 	}
 	return i
 }
+
+func UpdateCarData(kenteken string, c Car) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := collection.UpdateOne(ctx, bson.M{"kenteken": kenteken}, bson.M{"$set": c})
+	if err != nil {
+		return fmt.Errorf("failed to update car data: %v", err)
+	}
+
+	return nil
+}
