@@ -1,74 +1,73 @@
 {{extends "base.jet.html"}}
 {{block body()}}
 
-<div class="flex items-center justify-center space-x-6 text-white p-6 rounded-xl">
-    <!-- Title -->
-    <h1 class="text-4xl font-semibold tracking-wide bg-gradient-to-r from-blue-400 to-purple-600 text-transparent bg-clip-text">
-        Cars I've Driven
-    </h1>
+<div class="flex flex-col items-center justify-center bg-gray-900 text-white py-8 px-6 rounded-xl shadow-lg">
+    <!-- Title and Form in One Line -->
+    <div class="flex items-center space-x-6">
+        <div class="flex flex-col items-center gap-2">
+        <h1 class="text-4xl font-semibold tracking-wide bg-gradient-to-r from-blue-400 to-purple-600 text-transparent bg-clip-text">
+            Cars I've Driven
+        </h1>
 
-    <!-- Car Input Form -->
-    <form action="/add-car" method="POST" class="flex items-center space-x-2 bg-gray-800 p-2 rounded-lg shadow-md">
-        <input
-                type="text"
-                name="kenteken"
-                placeholder="Kenteken"
-                class="bg-gray-700 text-white placeholder-gray-400 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-                type="submit"
-                value="Add Car"
-                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer transition duration-300"
-        />
-    </form>
+        <form action="/add-car" method="POST" class="flex items-center space-x-2 bg-gray-800 p-2 rounded-lg shadow-md">
+            <input
+                    type="text"
+                    name="kenteken"
+                    placeholder="Kenteken"
+                    class="bg-gray-700 text-white placeholder-gray-400 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+                    type="submit"
+                    value="Add Car"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer transition duration-300"
+            />
+        </form>
+        </div>
 
-    <!-- Statistics Card -->
-    <div class="bg-gray-800 p-4 rounded-lg shadow-md">
-        <h2 class="text-lg font-semibold text-blue-400">Statistics</h2>
-        <p class="text-gray-300 text-sm">Total Cars: <span class="text-white">{{ .TotalCars }}</span></p>
-        <p class="text-gray-300 text-sm">Total Images: <span class="text-white">{{ .TotalImages }}</span></p>
+        <div class="bg-gray-800 p-4 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-blue-400">Statistics</h2>
+            <p class="text-gray-300 text-sm">Total Cars: <span class="text-white">{{ .TotalCars }}</span></p>
+            <p class="text-gray-300 text-sm">Total Images: <span class="text-white">{{ .TotalImages }}</span></p>
+        </div>
     </div>
 </div>
 
-
-
-
-<div class="grid grid-cols-[repeat(auto-fit,minmax(400px,400px))] justify-center gap-6 px-4">
+<!-- Grid Layout for Car Cards -->
+<div class="grid grid-cols-[repeat(auto-fit,minmax(400px,400px))] justify-center gap-6 px-4 py-8 bg-gray-900">
     {{ range i,v := .Cars }}
-    <div class="w-full max-w-[400px] bg-white shadow-lg rounded-lg overflow-hidden">
-        <div class="w-full h-64 bg-gray-200 flex justify-center items-center relative">
+    <div class="w-full max-w-[400px] bg-gray-800 shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition duration-300">
+        <div class="w-full h-64 bg-gray-700 flex justify-center items-center relative">
             {{ if v.Picture }}
             <img src="data:image/jpeg;base64,{{ v.Picture }}" alt="Car Image" class="object-fill h-full">
-            <form action="/delete-image" method="POST" class="absolute inset-0 flex justify-center items-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30">
-                    <input type="hidden" name="kenteken" value="{{ v.Kenteken }}">
-                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
-                        Delete
-                    </button>
-                </form>
+            <form action="/delete-image" method="POST" class="absolute inset-0 flex justify-center items-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50">
+                <input type="hidden" name="kenteken" value="{{ v.Kenteken }}">
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded shadow-md">
+                    Delete
+                </button>
+            </form>
             {{ else }}
-                <form action="/upload-image" method="POST" enctype="multipart/form-data" class="flex flex-col items-center">
-                    <input type="hidden" name="kenteken" value="{{ v.Kenteken }}">
-                    <label class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">
-                        Upload Image
-                        <input type="file" name="picture" class="hidden" onchange="this.form.submit()">
-                    </label>
-                </form>
+            <form action="/upload-image" method="POST" enctype="multipart/form-data" class="flex flex-col items-center">
+                <input type="hidden" name="kenteken" value="{{ v.Kenteken }}">
+                <label class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded shadow-md">
+                    Upload Image
+                    <input type="file" name="picture" class="hidden" onchange="this.form.submit()">
+                </label>
+            </form>
             {{ end }}
         </div>
 
         <div class="p-4">
-            <h2 class="text-lg font-semibold text-gray-800 break-words">{{ v.Merk }} {{ v.Handelsbenaming }}
-            </h2>
-
-            <p class="text-gray-600 text-sm">Kenteken: {{ v.Kenteken }}</p>
-            <p class="text-gray-600 text-sm">Variant: {{ v.Variant }} - {{ v.Uitvoering }}</p>
-            <p class="text-gray-600 text-sm">Kleur: {{ v.EersteKleur }}</p>
-            <p class="text-gray-600 text-sm">Zitplaatsen: {{ v.AantalZitplaatsen }}</p>
-            <p class="text-gray-600 text-sm">Deuren: {{ v.AantalDeuren }}</p>
-            <p class="text-gray-600 text-sm">Cilinders: {{ v.AantalCilinders }}</p>
-            <p class="text-gray-600 text-sm">Catalogusprijs: €{{ v.Catalogusprijs }}</p>
+            <h2 class="text-lg font-semibold text-blue-400 break-words">{{ v.Merk }} {{ v.Handelsbenaming }}</h2>
+            <p class="text-gray-400 text-sm">Kenteken: <span class="text-white">{{ v.Kenteken }}</span></p>
+            <p class="text-gray-400 text-sm">Variant: <span class="text-white">{{ v.Variant }} - {{ v.Uitvoering }}</span></p>
+            <p class="text-gray-400 text-sm">Kleur: <span class="text-white">{{ v.EersteKleur }}</span></p>
+            <p class="text-gray-400 text-sm">Zitplaatsen: <span class="text-white">{{ v.AantalZitplaatsen }}</span></p>
+            <p class="text-gray-400 text-sm">Deuren: <span class="text-white">{{ v.AantalDeuren }}</span></p>
+            <p class="text-gray-400 text-sm">Cilinders: <span class="text-white">{{ v.AantalCilinders }}</span></p>
+            <p class="text-gray-400 text-sm">Catalogusprijs: <span class="text-green-400">€{{ v.Catalogusprijs }}</span></p>
         </div>
     </div>
     {{ end }}
 </div>
+
 {{end}}
