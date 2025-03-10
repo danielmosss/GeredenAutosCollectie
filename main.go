@@ -19,6 +19,7 @@ func main() {
 		View: jet.NewSet(jet.NewOSFileSystemLoader("./views"), jet.InDevelopmentMode()),
 	}
 	e.Renderer = t
+	e.Debug = true
 
 	// Set up routes
 	e.GET("/", func(c echo.Context) error {
@@ -30,7 +31,20 @@ func main() {
 			return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 		}
 
-		return c.Render(http.StatusOK, "index.jet.html", cars)
+		AmountOfCarsWithImages := 0
+		for _, car := range cars {
+			if car.Picture != "" {
+				AmountOfCarsWithImages++
+			}
+		}
+
+		data := echo.Map{
+			"Cars":        cars,
+			"TotalCars":   len(cars),
+			"TotalImages": AmountOfCarsWithImages,
+		}
+
+		return c.Render(http.StatusOK, "index.jet.html", data)
 	})
 
 	e.POST("/add-car", func(c echo.Context) error {
