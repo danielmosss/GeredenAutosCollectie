@@ -49,7 +49,13 @@ func SaveCarDrivenData(c Car) error {
 
 	c.DrivenDate = time.Now()
 
-	_, err := collection.InsertOne(ctx, c)
+	//check if car already exists
+	res, err := collection.FindOne(ctx, bson.M{"kenteken": c.Kenteken}).DecodeBytes()
+	if res != nil {
+		return fmt.Errorf("car already exists")
+	}
+
+	_, err = collection.InsertOne(ctx, c)
 	if err != nil {
 		return fmt.Errorf("failed to insert car data: %v", err)
 	}

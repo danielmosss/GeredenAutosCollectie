@@ -18,7 +18,10 @@ func AddCar(c echo.Context) error {
 
 	// Save the car data
 	if err := database.SaveCarDrivenData(car); err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to save car data")
+		data := echo.Map{
+			"error": err,
+		}
+		return c.Render(http.StatusInternalServerError, "error.jet.html", data)
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/")
