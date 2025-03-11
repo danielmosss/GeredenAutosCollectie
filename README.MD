@@ -21,8 +21,8 @@ This project is a web application for managing and displaying a collection of ca
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/car-collection-app.git
-    cd car-collection-app
+    git clone https://github.com/danielmosss/GeredenAutosCollectie
+    cd GeredenAutosCollectie
     ```
 
 2. Install dependencies:
