@@ -32,6 +32,7 @@ This project is a web application for managing and displaying a collection of ca
     ```
 
 3. Create a `.env` file with the necessary environment variables.
+Get you RDW_APP_TOKEN from: https://opendata.rdw.nl/profile/edit/developer_settings
 
 4. Run the application:
     ```sh
