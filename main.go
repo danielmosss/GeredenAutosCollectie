@@ -48,21 +48,10 @@ func main() {
 		return c.Render(http.StatusOK, "index.jet.html", data)
 	})
 
-	e.GET("/car/:kenteken", func(c echo.Context) error {
-		return handlers.Carinfo(c)
-	})
-
-	e.POST("/add-car", func(c echo.Context) error {
-		return handlers.AddCar(c)
-	})
-
-	e.POST("/upload-image", func(c echo.Context) error {
-		return handlers.UploadImage(c)
-	})
-
-	e.POST("/delete-image", func(c echo.Context) error {
-		return handlers.DeleteImage(c)
-	})
+	e.GET("/car/:kenteken", handlers.Carinfo)
+	e.POST("/add-car", handlers.AddCar)
+	e.POST("/upload-image", handlers.UploadImage)
+	e.POST("/delete-image", handlers.DeleteImage)
 
 	e.GET("/edit-car/:kenteken", func(c echo.Context) error {
 		kenteken := c.Param("kenteken")
@@ -98,6 +87,9 @@ func main() {
 		}
 		return c.Redirect(http.StatusFound, "/")
 	})
+
+	e.GET("/delete-car/:kenteken", handlers.DeleteCarPage)
+	e.POST("/delete-car/:kenteken", handlers.DeleteCar)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

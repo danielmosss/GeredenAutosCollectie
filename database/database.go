@@ -203,3 +203,15 @@ func UpdateCarData(kenteken string, c Car) error {
 
 	return nil
 }
+
+func DeleteCar(kenteken string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := collection.DeleteOne(ctx, bson.M{"kenteken": kenteken})
+	if err != nil {
+		return fmt.Errorf("failed to delete car: %v", err)
+	}
+
+	return nil
+}
