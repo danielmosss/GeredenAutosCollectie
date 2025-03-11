@@ -45,7 +45,6 @@ This project is a web application for managing and displaying a collection of ca
 - `handlers/`: Contains the request handlers.
 - `database/`: Contains database-related functions.
 - `views/`: Contains Jet templates for rendering HTML views.
-- `static/`: Contains static files like CSS and JavaScript.
 
 ## Usage
 
