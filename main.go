@@ -48,6 +48,10 @@ func main() {
 		return c.Render(http.StatusOK, "index.jet.html", data)
 	})
 
+	e.GET("/car/:kenteken", func(c echo.Context) error {
+		return handlers.Carinfo(c)
+	})
+
 	e.POST("/add-car", func(c echo.Context) error {
 		return handlers.AddCar(c)
 	})

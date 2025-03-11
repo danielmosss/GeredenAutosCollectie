@@ -9,6 +9,7 @@ This project is a web application for managing and displaying a collection of ca
 - Add new cars to the collection.
 - Edit car details.
 - Upload and delete car images.
+- View car details in a separate page.
 
 ## Technologies Used
 
@@ -63,3 +64,4 @@ Click on a car in the overview to edit its details. Update the fields and submit
 ## Images
 ![img.png](img.png)
 ![img_1.png](img_1.png)
+![img_2.png](img_2.png)

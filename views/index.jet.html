@@ -57,10 +57,15 @@
         </div>
 
         <div class="p-4 relative">
-            <!-- Edit Button (Top Right) -->
-            <a href="/edit-car/{{ v.Kenteken }}" class="absolute top-4 right-4 text-blue-400 hover:text-blue-500 transition duration-300">
-                <i class="fas fa-pen fa-sm"></i>
-            </a>
+            <div class="absolute top-4 right-4 text-blue-400 hover:text-blue-500 transition duration-300 gap-4 flex">
+                <a href="/edit-car/{{ v.Kenteken }}">
+                    <i class="fas fa-pen fa-lg"></i>
+                </a>
+                <a href="/car/{{ v.Kenteken }}">
+                    <i class="fas fa-circle-info fa-lg"></i>
+                </a>
+            </div>
+
             <h2 class="text-lg font-semibold text-blue-400 break-words">{{ v.Merk }} {{ v.Handelsbenaming }}</h2>
             <p class="text-gray-400 text-sm">Kenteken: <span class="text-white">{{ v.Kenteken }}</span></p>
             <p class="text-gray-400 text-sm">Variant: <span class="text-white">{{ v.Variant }} - {{ v.Uitvoering }}</span></p>
